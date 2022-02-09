@@ -3,6 +3,8 @@
 EF модель разрабатывал используя надстройку Entity Framework Visual Editor (https://marketplace.visualstudio.com/items?itemName=michaelsawczyn.EFDesigner)
 Это визуальный редактор модели, генерирующий DbContext и Entity классы
 
+![Screenshot](ModelEditor.jpg)
+
 В WebApi показаны только базовые класс (в т.ч. Generic контроллер - основа для унаследованных контроллеров сущностей)
 
 Подключена OData 8, после реализации контроллеров сущностей будет возможность OData параметризированных запросов 
