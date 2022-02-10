@@ -8,6 +8,19 @@ namespace CovidDoc.WebApi.Services
 {
     public class SecurityService
     {
+        private Type[] adminEntityTypes = new[] { typeof(AppUser), typeof(AppRole) };
+        private bool IsAdminEntity<T>() => adminEntityTypes.Contains(typeof(T));
+
+        private Func<T, bool> TryAdmin<T>(AppUser currentUser, Func<T, bool> securityFilterPredicate)
+        {
+            if (IsAdminEntity<T>())
+            {
+                securityFilterPredicate = (T obj) => currentUser?.IsAdmin() ?? false;
+            }
+
+            return securityFilterPredicate;
+        }
+
         /// <summary>
         /// Ограничения доступности объектов модели для выборки текущим пользователем
         /// </summary>
@@ -18,12 +31,9 @@ namespace CovidDoc.WebApi.Services
         public IQueryable<T> WhereAccessGranted<T>(IEnumerable<T> source, AppUser currentUser)
         {
             Func<T, bool> securityFilterPredicate = (T obj) => true;
-            if (new[] { typeof(AppUser), typeof(AppRole)}.Contains(typeof(T)))
-            {
-                securityFilterPredicate = (T obj) => currentUser?.IsAdmin() ?? false;
-            }
+            securityFilterPredicate = TryAdmin(currentUser, securityFilterPredicate);
             return source.Where(x => securityFilterPredicate(x)).AsQueryable<T>();
-        }
+        }        
 
         /// <summary>
         /// Проверка доступа текущего пользователя к объектоу
@@ -35,30 +45,21 @@ namespace CovidDoc.WebApi.Services
         public bool ReadGranted<T>(T entity, AppUser currentUser)
         {
             Func<T, bool> grantPredicate = (T obj) => true;
-            if (new[] { typeof(AppUser), typeof(AppRole) }.Contains(typeof(T)))
-            {
-                grantPredicate = (T obj) => currentUser?.IsAdmin() ?? false;
-            }
+            grantPredicate = TryAdmin(currentUser, grantPredicate);
             return grantPredicate(entity);
         }
 
         public bool DeleteGranted<T>(T entity, AppUser currentUser)
         {
             Func<T, bool> grantPredicate = (T obj) => true;
-            if (new[] { typeof(AppUser), typeof(AppRole) }.Contains(typeof(T)))
-            {
-                grantPredicate = (T obj) => currentUser?.IsAdmin() ?? false;
-            }
+            grantPredicate = TryAdmin(currentUser, grantPredicate);
             return grantPredicate(entity);
         }
 
         public bool CreateGranted<T>(T entity, AppUser currentUser)
         {
             Func<T, bool> grantPredicate = (T obj) => true;
-            if (new[] { typeof(AppUser), typeof(AppRole) }.Contains(typeof(T)))
-            {
-                grantPredicate = (T obj) => currentUser?.IsAdmin() ?? false;
-            }
+            grantPredicate = TryAdmin(currentUser, grantPredicate);
             return grantPredicate(entity);
         }
     }
