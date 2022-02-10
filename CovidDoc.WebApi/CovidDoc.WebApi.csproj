@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Controllers\Controllers.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Controllers.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.7" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="5.0.14" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
@@ -12,6 +20,25 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CovidDoc.Model\CovidDoc.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controllers\Controllers.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Controllers.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Controllers\Controllers.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Controllers.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

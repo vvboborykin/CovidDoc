@@ -1,0 +1,34 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<# var classNames = File.ReadAllLines(@"C:\Users\bpost\source\repos\CovidDoc\CovidDoc.WebApi\Controllers\ClassList.txt"); #>
+
+using CovidDoc.Model;
+using CovidDoc.WebApi.Services;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace CovidDoc.WebApi.Controllers
+{
+<# foreach(var className in classNames) { #>
+<# var controllerName = className + "Controller"; #>
+    /// <summary>
+    /// WebApi контроллер для сущности EF модели <#= className #>
+    /// </summary>
+    public partial class <#= controllerName #> : BaseController<<#= className #>>
+    {
+        public <#= controllerName #>(ILogger<<#= controllerName #>> logger, CovidDoc.Model.CovidDocModel dbContext, SecurityService securityService)
+            : base(logger, dbContext, securityService)
+        {
+        }
+    }
+
+<#}#>
+}
