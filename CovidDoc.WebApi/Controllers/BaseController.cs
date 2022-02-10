@@ -47,8 +47,7 @@ namespace CovidDoc.WebApi.Controllers
             }
             else
             {
-                var appUser = DbContext.AppUser.FirstOrDefault(x => x.UserName == HttpContext.User.Identity.Name);
-                if (SecurityService.ReadGranted(entity, appUser))
+                if (SecurityService.ReadGranted(entity, GetAppUser()))
                 {
                     Logger.LogDebug($@"Запрошен объект {typeof(T).Name} с ключом {id}");
                     return Ok(entity);
@@ -92,9 +91,8 @@ namespace CovidDoc.WebApi.Controllers
             if (entity == null)
                 return NotFound();
             else
-            {
-                var appUser = DbContext.AppUser.FirstOrDefault(x => x.UserName == HttpContext.User.Identity.Name);
-                if (SecurityService.DeleteGranted(entity, appUser))
+            {                
+                if (SecurityService.DeleteGranted(entity, GetAppUser()))
                 {
                     DbContext.Remove<T>(entity);
                     await DbContext.SaveChangesAsync();
@@ -106,10 +104,15 @@ namespace CovidDoc.WebApi.Controllers
                     Logger.LogDebug($@"Удаление объекта {typeof(T).Name} {entity} запрещено системой безопасности");
                     return Unauthorized(entity);
                 }
-            }            
+            }
         }
 
-        
+        private AppUser GetAppUser()
+        {
+            return DbContext.AppUser.FirstOrDefault(x => x.UserName == HttpContext.User.Identity.Name);
+        }
+
+
 
         /// <summary>
         /// Создание нового объекта
@@ -123,16 +126,18 @@ namespace CovidDoc.WebApi.Controllers
             if (entity == null)
                 return NotFound();
             else
-            {
-                var appUser = DbContext.AppUser.FirstOrDefault(x => x.UserName == HttpContext.User.Identity.Name);
-                if (SecurityService.CreateGranted(entity, appUser))
+            {               
+                if (SecurityService.CreateGranted(entity, GetAppUser()))
                 {
                     CustomValidateModelState(entity, ModelState);
                     if (!ModelState.IsValid)
                         return BadRequest(ModelState);
+
                     await DbContext.AddAsync<T>(entity);
                     await DbContext.SaveChangesAsync();
+
                     var key = (long)entity.GetType().GetProperty("Id").GetValue(entity);
+
                     return CreatedAtAction(nameof(Get), new { id = key }, entity);
                 }
                 else
@@ -143,6 +148,11 @@ namespace CovidDoc.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Пользовательская проверка объекта перед сохранением (в дополнение к атрибутам)
+        /// </summary>
+        /// <param name="entity">Сохранияемый объект</param>
+        /// <param name="modelState">Состояние модели для добавления ошибок</param>
         protected virtual void CustomValidateModelState(T entity, ModelStateDictionary modelState)
         {
             
