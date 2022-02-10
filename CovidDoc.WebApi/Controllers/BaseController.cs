@@ -120,7 +120,7 @@ namespace CovidDoc.WebApi.Controllers
         /// <param name="entity">Удаленный объект</param>
         protected virtual void OnDeleted(T entity)
         {
-            throw new NotImplementedException();
+            
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace CovidDoc.WebApi.Controllers
         /// <param name="entity">Удаляемый объект</param>
         protected virtual void OnDeleting(T entity)
         {
-            throw new NotImplementedException();
+            
         }
 
         private AppUser GetAppUser()
@@ -208,7 +208,7 @@ namespace CovidDoc.WebApi.Controllers
         /// </summary>
         /// <param name="entity">Содержание измененного объекта</param>
         /// <returns></returns>
-        [HttpPut)]
+        [HttpPut]
         [EnableQuery]
         public async Task<IActionResult> Put(T entity)
         {
