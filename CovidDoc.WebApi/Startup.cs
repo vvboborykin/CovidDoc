@@ -59,8 +59,10 @@ namespace CovidDoc.WebApi
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
             
             // определяем модель OData для кождого из типов бизнес - классов EF
-            foreach (var entityclass in Assembly.GetAssembly(typeof(AppUser)).GetTypes().Where(x => x.GetProperty("id") != null))
+            foreach (var entityclass in typeof(AppUser).Assembly.GetTypes().Where(x => x.IsClass && x.GetProperty("Id") != null))
             {
+                if (entityclass.Name.Contains(@"Anonymou"))
+                    continue;
                 EntityTypeConfiguration entityType = builder.AddEntityType(entityclass);
                 entityType.HasKey(entityclass.GetProperty("Id"));
                 builder.AddEntitySet(entityclass.Name, entityType);
