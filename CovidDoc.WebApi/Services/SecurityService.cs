@@ -20,7 +20,7 @@ namespace CovidDoc.WebApi.Services
             Func<T, bool> securityFilterPredicate = (T obj) => true;
             if (new[] { typeof(AppUser), typeof(AppRole)}.Contains(typeof(T)))
             {
-                securityFilterPredicate = (T obj) => currentUser.IsAdmin();
+                securityFilterPredicate = (T obj) => currentUser?.IsAdmin() ?? false;
             }
             return source.Where(x => securityFilterPredicate(x)).AsQueryable<T>();
         }
@@ -37,7 +37,7 @@ namespace CovidDoc.WebApi.Services
             Func<T, bool> grantPredicate = (T obj) => true;
             if (new[] { typeof(AppUser), typeof(AppRole) }.Contains(typeof(T)))
             {
-                grantPredicate = (T obj) => currentUser.IsAdmin();
+                grantPredicate = (T obj) => currentUser?.IsAdmin() ?? false;
             }
             return grantPredicate(entity);
         }
@@ -47,7 +47,7 @@ namespace CovidDoc.WebApi.Services
             Func<T, bool> grantPredicate = (T obj) => true;
             if (new[] { typeof(AppUser), typeof(AppRole) }.Contains(typeof(T)))
             {
-                grantPredicate = (T obj) => currentUser.IsAdmin();
+                grantPredicate = (T obj) => currentUser?.IsAdmin() ?? false;
             }
             return grantPredicate(entity);
         }
@@ -57,7 +57,7 @@ namespace CovidDoc.WebApi.Services
             Func<T, bool> grantPredicate = (T obj) => true;
             if (new[] { typeof(AppUser), typeof(AppRole) }.Contains(typeof(T)))
             {
-                grantPredicate = (T obj) => currentUser.IsAdmin();
+                grantPredicate = (T obj) => currentUser?.IsAdmin() ?? false;
             }
             return grantPredicate(entity);
         }

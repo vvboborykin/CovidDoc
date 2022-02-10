@@ -33,21 +33,13 @@ namespace CovidDoc.Model
       partial void Init();
 
       /// <summary>
-      /// Default constructor. Protected due to required properties, but present because EF needs it.
+      /// Default constructor
       /// </summary>
-      protected VaccineType()
+      public VaccineType()
       {
          Vaccinations = new System.Collections.Generic.HashSet<global::CovidDoc.Model.Vaccination>();
 
          Init();
-      }
-
-      /// <summary>
-      /// Replaces default constructor, since it's protected. Caller assumes responsibility for setting all required values before saving.
-      /// </summary>
-      public static VaccineType CreateVaccineTypeUnsafe()
-      {
-         return new VaccineType();
       }
 
       /// <summary>

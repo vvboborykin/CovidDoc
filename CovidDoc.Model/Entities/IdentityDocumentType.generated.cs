@@ -33,21 +33,13 @@ namespace CovidDoc.Model
       partial void Init();
 
       /// <summary>
-      /// Default constructor. Protected due to required properties, but present because EF needs it.
+      /// Default constructor
       /// </summary>
-      protected IdentityDocumentType()
+      public IdentityDocumentType()
       {
          IdentityDocuments = new System.Collections.Generic.HashSet<global::CovidDoc.Model.IdentityDocument>();
 
          Init();
-      }
-
-      /// <summary>
-      /// Replaces default constructor, since it's protected. Caller assumes responsibility for setting all required values before saving.
-      /// </summary>
-      public static IdentityDocumentType CreateIdentityDocumentTypeUnsafe()
-      {
-         return new IdentityDocumentType();
       }
 
       /// <summary>

@@ -32,7 +32,7 @@ namespace CovidDoc.WebApi.Controllers
         /// <summary>
         /// Выборка еденичного объекта
         /// </summary>
-        /// <param name="id">Ключ объекта для выборки</param>
+        /// <param name="Id">Ключ объекта для выборки</param>
         /// <returns></returns>
         [HttpGet("{id}")]
         [EnableQuery]
@@ -81,7 +81,7 @@ namespace CovidDoc.WebApi.Controllers
         /// <summary>
         /// Удаление объекта по его ключу
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
         [EnableQuery]
@@ -126,7 +126,7 @@ namespace CovidDoc.WebApi.Controllers
                 {
                     await DbContext.AddAsync<T>(entity);
                     await DbContext.SaveChangesAsync();
-                    var key = (long)entity.GetType().GetProperty("id").GetValue(entity);
+                    var key = (long)entity.GetType().GetProperty("Id").GetValue(entity);
                     return CreatedAtAction(nameof(Get), new { id = key }, entity);
                 }
                 else

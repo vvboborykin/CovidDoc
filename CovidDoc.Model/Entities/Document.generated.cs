@@ -33,9 +33,9 @@ namespace CovidDoc.Model
       partial void Init();
 
       /// <summary>
-      /// Default constructor. Protected due to being abstract.
+      /// Default constructor
       /// </summary>
-      protected Document()
+      public Document()
       {
          ModifiedByUser = new System.Collections.Generic.HashSet<global::CovidDoc.Model.AppUser>();
          Signatures = new System.Collections.Generic.HashSet<global::CovidDoc.Model.Signature>();

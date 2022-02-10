@@ -33,19 +33,11 @@ namespace CovidDoc.Model
       partial void Init();
 
       /// <summary>
-      /// Default constructor. Protected due to required properties, but present because EF needs it.
+      /// Default constructor
       /// </summary>
-      protected IdentityDocument()
+      public IdentityDocument()
       {
          Init();
-      }
-
-      /// <summary>
-      /// Replaces default constructor, since it's protected. Caller assumes responsibility for setting all required values before saving.
-      /// </summary>
-      public static IdentityDocument CreateIdentityDocumentUnsafe()
-      {
-         return new IdentityDocument();
       }
 
       /// <summary>

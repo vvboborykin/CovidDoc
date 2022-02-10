@@ -33,9 +33,9 @@ namespace CovidDoc.Model
       partial void Init();
 
       /// <summary>
-      /// Default constructor. Protected due to required properties, but present because EF needs it.
+      /// Default constructor
       /// </summary>
-      protected Patient()
+      public Patient()
       {
          Sex = 2;
          Phone = "Номер телефона";
@@ -45,14 +45,6 @@ namespace CovidDoc.Model
          Works = new System.Collections.Generic.HashSet<global::CovidDoc.Model.Work>();
 
          Init();
-      }
-
-      /// <summary>
-      /// Replaces default constructor, since it's protected. Caller assumes responsibility for setting all required values before saving.
-      /// </summary>
-      public static Patient CreatePatientUnsafe()
-      {
-         return new Patient();
       }
 
       /// <summary>

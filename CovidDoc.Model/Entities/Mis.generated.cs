@@ -33,9 +33,9 @@ namespace CovidDoc.Model
       partial void Init();
 
       /// <summary>
-      /// Default constructor. Protected due to being abstract.
+      /// Default constructor
       /// </summary>
-      protected Mis()
+      public Mis()
       {
          Init();
       }

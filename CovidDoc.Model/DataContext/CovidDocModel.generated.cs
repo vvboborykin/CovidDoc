@@ -426,14 +426,12 @@ namespace CovidDoc.Model
                      .Property(t => t.Serial)
                      .HasMaxLength(255)
                      .IsRequired();
-         modelBuilder.Entity<global::CovidDoc.Model.IdentityDocument>().HasIndex(t => t.Serial)
-                     .IsUnique();
+         modelBuilder.Entity<global::CovidDoc.Model.IdentityDocument>().HasIndex(t => t.Serial);
          modelBuilder.Entity<global::CovidDoc.Model.IdentityDocument>()
                      .Property(t => t.Number)
                      .HasMaxLength(255)
                      .IsRequired();
-         modelBuilder.Entity<global::CovidDoc.Model.IdentityDocument>().HasIndex(t => t.Number)
-                     .IsUnique();
+         modelBuilder.Entity<global::CovidDoc.Model.IdentityDocument>().HasIndex(t => t.Number);
 
          modelBuilder.Entity<global::CovidDoc.Model.IdentityDocumentType>()
                      .ToTable("IdentityDocumentType")
@@ -458,14 +456,12 @@ namespace CovidDoc.Model
                      .Property(t => t.SerialPattern)
                      .HasMaxLength(255)
                      .IsRequired();
-         modelBuilder.Entity<global::CovidDoc.Model.IdentityDocumentType>().HasIndex(t => t.SerialPattern)
-                     .IsUnique();
+         modelBuilder.Entity<global::CovidDoc.Model.IdentityDocumentType>().HasIndex(t => t.SerialPattern);
          modelBuilder.Entity<global::CovidDoc.Model.IdentityDocumentType>()
                      .Property(t => t.NumberPattern)
                      .HasMaxLength(255)
                      .IsRequired();
-         modelBuilder.Entity<global::CovidDoc.Model.IdentityDocumentType>().HasIndex(t => t.NumberPattern)
-                     .IsUnique();
+         modelBuilder.Entity<global::CovidDoc.Model.IdentityDocumentType>().HasIndex(t => t.NumberPattern);
          modelBuilder.Entity<global::CovidDoc.Model.IdentityDocumentType>()
                      .HasMany<global::CovidDoc.Model.IdentityDocument>(p => p.IdentityDocuments)
                      .WithOne(p => p.IdentityDocumentType)
