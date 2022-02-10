@@ -45,6 +45,8 @@ namespace CovidDoc.WebApi
 
             // сервис безопасности API
             services.AddScoped<SecurityService>();
+            services.AddScoped<StateMachineService>();
+            services.AddScoped<StatusTransitionPredicateEvaluator>();
 
             services.AddLogging();
             services.AddDbContext<CovidDoc.Model.CovidDocModel>(options => options.UseSqlite(Configuration.GetConnectionString(@"CovidDoc")));

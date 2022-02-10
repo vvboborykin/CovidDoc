@@ -23,7 +23,8 @@ namespace CovidDoc.WebApi.Controllers
         public CovidDocModel DbContext { get; }
         public SecurityService SecurityService { get; }
 
-        public BaseController(ILogger<BaseController<T>> logger, CovidDocModel dbContext, SecurityService securityService): base()
+        public BaseController(ILogger<BaseController<T>> logger, CovidDocModel dbContext, SecurityService securityService)
+            : base()
         {
             Logger = logger;
             DbContext = dbContext;
