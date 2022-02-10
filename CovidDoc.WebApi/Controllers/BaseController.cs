@@ -93,9 +93,13 @@ namespace CovidDoc.WebApi.Controllers
             else
             {                
                 if (SecurityService.DeleteGranted(entity, GetAppUser()))
-                {                    
+                {
+                    OnDeleting(entity);
+
                     DbContext.Remove<T>(entity);
                     await DbContext.SaveChangesAsync();
+
+                    OnDeleted(entity);
 
                     Logger.LogDebug($@"Удален объект {typeof(T).Name} {entity}");
 
@@ -107,6 +111,26 @@ namespace CovidDoc.WebApi.Controllers
                     return Unauthorized(entity);
                 }
             }
+        }
+
+        /// <summary>
+        /// Виртуальный метод выполняемый после удаления объекта из БД
+        /// Переопределять в унаследованных контроллерах
+        /// </summary>
+        /// <param name="entity">Удаленный объект</param>
+        protected virtual void OnDeleted(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Виртуальный метод выполняемый до удаления объекта из БД
+        /// Переопределять в унаследованных контроллерах
+        /// </summary>
+        /// <param name="entity">Удаляемый объект</param>
+        protected virtual void OnDeleting(T entity)
+        {
+            throw new NotImplementedException();
         }
 
         private AppUser GetAppUser()
@@ -129,14 +153,18 @@ namespace CovidDoc.WebApi.Controllers
                 return NotFound();
             else
             {               
-                if (SecurityService.ModifyGranted(entity, GetAppUser()))
+                if (SecurityService.CreateGranted(entity, GetAppUser()))
                 {
                     CustomValidateModelState(entity, ModelState);
                     if (!ModelState.IsValid)
                         return BadRequest(ModelState);
 
+                    OnCreating(entity);
+
                     await DbContext.AddAsync<T>(entity);
                     await DbContext.SaveChangesAsync();
+
+                    OnCreated(entity);
 
                     var key = GetKey(entity);
 
@@ -150,9 +178,29 @@ namespace CovidDoc.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Виртуальный метод выполняемый после записи нового объекта в БД
+        /// Переопределять в унаследованных контроллерах
+        /// </summary>
+        /// <param name="entity">Новый объект</param>
+        protected virtual void OnCreated(T entity)
+        {
+            
+        }
+
+        /// <summary>
+        /// Виртуальный метод выполняемый до записи ноовго объекта в БД
+        /// Переопределять в унаследованных контроллерах
+        /// </summary>
+        /// <param name="entity">Новый объект</param>
+        protected virtual void OnCreating(T entity)
+        {
+            
+        }
+
         protected static long? GetKey(T entity)
         {
-            return  entity == null ? null :(long)entity.GetType().GetProperty("Id").GetValue(entity);
+            return entity == null ? null :(long)entity.GetType().GetProperty("Id").GetValue(entity);
         }
 
         /// <summary>
@@ -176,8 +224,12 @@ namespace CovidDoc.WebApi.Controllers
                     if (!ModelState.IsValid)
                         return BadRequest(ModelState);
 
+                    OnUpdating(entity);
+
                     DbContext.Update<T>(entity);
-                    await DbContext.SaveChangesAsync();                    
+                    await DbContext.SaveChangesAsync();
+
+                    OnUpdated(entity);
 
                     return Ok(entity);
                 }
@@ -187,6 +239,26 @@ namespace CovidDoc.WebApi.Controllers
                     return Unauthorized(entity);
                 }
             }
+        }
+
+        /// <summary>
+        /// Виртуальный метод выполняемый до записи изменений объекта в БД
+        /// Переопределять в унаследованных контроллерах
+        /// </summary>
+        /// <param name="entity">Измененный объект</param>
+        protected virtual void OnUpdated(T entity)
+        {
+            
+        }
+
+        /// <summary>
+        /// Виртуальный метод выполняемый после записи изменений объекта в БД
+        /// Переопределять в унаследованных контроллерах
+        /// </summary>
+        /// <param name="entity">Измененный объект</param>
+        protected virtual void OnUpdating(T entity)
+        {
+            
         }
 
         /// <summary>

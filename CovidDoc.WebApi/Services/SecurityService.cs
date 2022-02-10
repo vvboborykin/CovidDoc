@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CovidDoc.WebApi.Services
 {
+    /// <summary>
+    /// Сервис безопасности приложения
+    /// </summary>
     public class SecurityService
     {
         private Type[] adminEntityTypes = new[] { typeof(AppUser), typeof(AppRole) };
@@ -36,7 +39,7 @@ namespace CovidDoc.WebApi.Services
         }        
 
         /// <summary>
-        /// Проверка доступа текущего пользователя к объектоу
+        /// Проверка доступа текущего пользователя к объекту
         /// </summary>
         /// <typeparam name="T">Тип объекта</typeparam>
         /// <param name="entity">Объект</param>
@@ -49,6 +52,13 @@ namespace CovidDoc.WebApi.Services
             return grantPredicate(entity);
         }
 
+        /// <summary>
+        /// Проверка доступа пользователя к удалению объекта
+        /// </summary>
+        /// <typeparam name="T">Тип объекта</typeparam>
+        /// <param name="entity">Объект для удаления</param>
+        /// <param name="currentUser">Текущий пользователь</param>
+        /// <returns></returns>
         public bool DeleteGranted<T>(T entity, AppUser currentUser)
         {
             Func<T, bool> grantPredicate = (T obj) => true;
@@ -56,7 +66,28 @@ namespace CovidDoc.WebApi.Services
             return grantPredicate(entity);
         }
 
+        /// <summary>
+        /// Проверка доступа пользователя к изменению объекта
+        /// </summary>
+        /// <typeparam name="T">Тип объекта</typeparam>
+        /// <param name="entity">Объект для изменения</param>
+        /// <param name="currentUser">Текущий пользователь</param>
+        /// <returns></returns>
         public bool ModifyGranted<T>(T entity, AppUser currentUser)
+        {
+            Func<T, bool> grantPredicate = (T obj) => true;
+            grantPredicate = TryAdmin(currentUser, grantPredicate);
+            return grantPredicate(entity);
+        }
+
+        /// <summary>
+        /// Проверка доступа пользователя к созданию объекта
+        /// </summary>
+        /// <typeparam name="T">Тип объекта</typeparam>
+        /// <param name="entity">Объект для включения в домен</param>
+        /// <param name="currentUser">Текущий пользователь</param>
+        /// <returns></returns>
+        internal bool CreateGranted<T>(T entity, AppUser currentUser) where T : class
         {
             Func<T, bool> grantPredicate = (T obj) => true;
             grantPredicate = TryAdmin(currentUser, grantPredicate);
