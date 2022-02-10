@@ -1,6 +1,7 @@
 ﻿using CovidDoc.Model;
 using CovidDoc.WebApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.Extensions.Logging;
 using System;
@@ -108,6 +109,8 @@ namespace CovidDoc.WebApi.Controllers
             }            
         }
 
+        
+
         /// <summary>
         /// Создание нового объекта
         /// </summary>
@@ -124,6 +127,9 @@ namespace CovidDoc.WebApi.Controllers
                 var appUser = DbContext.AppUser.FirstOrDefault(x => x.UserName == HttpContext.User.Identity.Name);
                 if (SecurityService.CreateGranted(entity, appUser))
                 {
+                    CustomValidateModelState(entity, ModelState);
+                    if (!ModelState.IsValid)
+                        return BadRequest(ModelState);
                     await DbContext.AddAsync<T>(entity);
                     await DbContext.SaveChangesAsync();
                     var key = (long)entity.GetType().GetProperty("Id").GetValue(entity);
@@ -137,5 +143,9 @@ namespace CovidDoc.WebApi.Controllers
             }
         }
 
+        protected virtual void CustomValidateModelState(T entity, ModelStateDictionary modelState)
+        {
+            
+        }
     }
 }
