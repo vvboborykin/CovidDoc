@@ -93,10 +93,12 @@ namespace CovidDoc.WebApi.Controllers
             else
             {                
                 if (SecurityService.DeleteGranted(entity, GetAppUser()))
-                {
+                {                    
                     DbContext.Remove<T>(entity);
                     await DbContext.SaveChangesAsync();
+
                     Logger.LogDebug($@"Удален объект {typeof(T).Name} {entity}");
+
                     return Ok(entity);
                 }
                 else
@@ -127,7 +129,7 @@ namespace CovidDoc.WebApi.Controllers
                 return NotFound();
             else
             {               
-                if (SecurityService.CreateGranted(entity, GetAppUser()))
+                if (SecurityService.ModifyGranted(entity, GetAppUser()))
                 {
                     CustomValidateModelState(entity, ModelState);
                     if (!ModelState.IsValid)
@@ -136,7 +138,7 @@ namespace CovidDoc.WebApi.Controllers
                     await DbContext.AddAsync<T>(entity);
                     await DbContext.SaveChangesAsync();
 
-                    var key = (long)entity.GetType().GetProperty("Id").GetValue(entity);
+                    var key = GetKey(entity);
 
                     return CreatedAtAction(nameof(Get), new { id = key }, entity);
                 }
@@ -148,8 +150,48 @@ namespace CovidDoc.WebApi.Controllers
             }
         }
 
+        protected static long? GetKey(T entity)
+        {
+            return  entity == null ? null :(long)entity.GetType().GetProperty("Id").GetValue(entity);
+        }
+
+        /// <summary>
+        /// Изменение объекта
+        /// </summary>
+        /// <param name="entity">Содержание измененного объекта</param>
+        /// <returns></returns>
+        [HttpPut)]
+        [EnableQuery]
+        public async Task<IActionResult> Put(T entity)
+        {
+            long? key = GetKey(entity);
+
+            if (DbContext.Find<T>(key) == null)
+                return NotFound();
+            else
+            {
+                if (SecurityService.ModifyGranted(entity, GetAppUser()))
+                {
+                    CustomValidateModelState(entity, ModelState);
+                    if (!ModelState.IsValid)
+                        return BadRequest(ModelState);
+
+                    DbContext.Update<T>(entity);
+                    await DbContext.SaveChangesAsync();                    
+
+                    return Ok(entity);
+                }
+                else
+                {
+                    Logger.LogWarning($@"Изменениее объекта {typeof(T).Name} {entity} запрещено системой безопасности");
+                    return Unauthorized(entity);
+                }
+            }
+        }
+
         /// <summary>
         /// Пользовательская проверка объекта перед сохранением (в дополнение к атрибутам)
+        /// При необходимости переопределяем в наследниках
         /// </summary>
         /// <param name="entity">Сохранияемый объект</param>
         /// <param name="modelState">Состояние модели для добавления ошибок</param>

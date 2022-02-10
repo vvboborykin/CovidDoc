@@ -56,7 +56,7 @@ namespace CovidDoc.WebApi.Services
             return grantPredicate(entity);
         }
 
-        public bool CreateGranted<T>(T entity, AppUser currentUser)
+        public bool ModifyGranted<T>(T entity, AppUser currentUser)
         {
             Func<T, bool> grantPredicate = (T obj) => true;
             grantPredicate = TryAdmin(currentUser, grantPredicate);
