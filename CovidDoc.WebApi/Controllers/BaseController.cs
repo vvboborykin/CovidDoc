@@ -47,14 +47,14 @@ namespace CovidDoc.WebApi.Controllers
             }
             else
             {
-                if (SecurityService.ReadGranted(entity, GetAppUser()))
+                if (SecurityService.ReadGranted(entity, GetCurrentAppUser()))
                 {
                     Logger.LogDebug($@"Запрошен объект {typeof(T).Name} с ключом {id}");
                     return Ok(entity);
                 }
                 else
                 {
-                    Logger.LogDebug($@"Доступ к объекту {entity} запрещен системой безопасности");
+                    Logger.LogWarning($@"Доступ к объекту {entity} запрещен системой безопасности");
                     return Unauthorized(entity);
                 }
             }
@@ -92,7 +92,7 @@ namespace CovidDoc.WebApi.Controllers
                 return NotFound();
             else
             {                
-                if (SecurityService.DeleteGranted(entity, GetAppUser()))
+                if (SecurityService.DeleteGranted(entity, GetCurrentAppUser()))
                 {
                     OnDeleting(entity);
 
@@ -107,7 +107,7 @@ namespace CovidDoc.WebApi.Controllers
                 }
                 else
                 {
-                    Logger.LogDebug($@"Удаление объекта {typeof(T).Name} {entity} запрещено системой безопасности");
+                    Logger.LogWarning($@"Удаление объекта {typeof(T).Name} {entity} запрещено системой безопасности");
                     return Unauthorized(entity);
                 }
             }
@@ -133,7 +133,12 @@ namespace CovidDoc.WebApi.Controllers
             
         }
 
-        private AppUser GetAppUser()
+
+        /// <summary>
+        /// Получить текущего аутентифицированного пользователя
+        /// </summary>
+        /// <returns>Текущий пользователь или null если никто не залогинен</returns>
+        protected AppUser GetCurrentAppUser()
         {
             return DbContext.AppUser.FirstOrDefault(x => x.UserName == HttpContext.User.Identity.Name);
         }
@@ -153,9 +158,10 @@ namespace CovidDoc.WebApi.Controllers
                 return NotFound();
             else
             {               
-                if (SecurityService.CreateGranted(entity, GetAppUser()))
+                if (SecurityService.CreateGranted(entity, GetCurrentAppUser()))
                 {
                     CustomValidateModelState(entity, ModelState);
+
                     if (!ModelState.IsValid)
                         return BadRequest(ModelState);
 
@@ -165,6 +171,8 @@ namespace CovidDoc.WebApi.Controllers
                     await DbContext.SaveChangesAsync();
 
                     OnCreated(entity);
+
+                    Logger.LogDebug($@"Объект {typeof(T).Name} {entity} создан и записан в БД");
 
                     var key = GetKey(entity);
 
@@ -218,9 +226,10 @@ namespace CovidDoc.WebApi.Controllers
                 return NotFound();
             else
             {
-                if (SecurityService.ModifyGranted(entity, GetAppUser()))
+                if (SecurityService.ModifyGranted(entity, GetCurrentAppUser()))
                 {
                     CustomValidateModelState(entity, ModelState);
+
                     if (!ModelState.IsValid)
                         return BadRequest(ModelState);
 
@@ -230,6 +239,8 @@ namespace CovidDoc.WebApi.Controllers
                     await DbContext.SaveChangesAsync();
 
                     OnUpdated(entity);
+
+                    Logger.LogDebug($@"Объект {typeof(T).Name} {entity} измененен");
 
                     return Ok(entity);
                 }
